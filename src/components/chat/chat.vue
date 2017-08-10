@@ -91,44 +91,42 @@ export default {
    mounted() {
         axios.get('/api/getDialog').then((res) => {
             var data=res.data.data
-			this.dialogs = data;
-			this.nextTopics = this.dialogs.fromUser;
-			this.appendDialog('0000');
+            this.dialogs = data;
+            this.nextTopics = this.dialogs.fromUser;
+            this.appendDialog('0000');
         })
+        window.updateScroll = ()=>{
+            const $chatbox = document.getElementById('mobile-body-content')
+            const distance = $chatbox.scrollHeight - $chatbox.offsetHeight - $chatbox.scrollTop;
+            const duration = 250;
+            const startTime = Date.now();
 
-	 window.updateScroll = function() {
-        const $chatbox = document.getElementById('mobile-body-content')
-        const distance = $chatbox.scrollHeight - $chatbox.offsetHeight - $chatbox.scrollTop;
-        const duration = 250;
-        const startTime = Date.now();
+            requestAnimationFrame(function step() {
+                const p = Math.min(1, (Date.now() - startTime) / duration);
+                $chatbox.scrollTop = $chatbox.scrollTop + distance * p
+                p < 1 && requestAnimationFrame(step);
+            });
+        }
+        window.onMessageSending = ()=> {
+            setTimeout(() => {
+                // update scroll position when vue has updated ui
+                updateScroll();
 
-        requestAnimationFrame(function step() {
-            const p = Math.min(1, (Date.now() - startTime) / duration);
-             $chatbox.scrollTop = $chatbox.scrollTop + distance * p
-            p < 1 && requestAnimationFrame(step);
-        });
-    }
-	 window.onMessageSending = function () {
-        setTimeout(() => {
-            // update scroll position when vue has updated ui
-            updateScroll();
-
-        });
-    }
-    window.delay = function(amount = 0) {
-        return new Promise(resolve => {
-            setTimeout(resolve, amount);
-        });
-    }
-
-	window.getRandomMsg = function(messages){
-		if (typeof messages === 'string' || !messages.length) {
-            return messages;
+            });
+        }
+        window.delay = (amount = 0)=> {
+            return new Promise(resolve => {
+                setTimeout(resolve, amount);
+            });
         }
 
-        const id = Math.floor(Math.random() * messages.length);
-        return messages[id];
-	}
+        window.getRandomMsg = (messages)=>{
+            if (typeof messages === 'string' || !messages.length) {
+                return messages;
+        }
+            const id = Math.floor(Math.random() * messages.length);
+            return messages[id];
+        }
   },
   methods: {
 	
