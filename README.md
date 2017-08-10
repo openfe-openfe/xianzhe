@@ -9,7 +9,7 @@
 ```
 git clone https://github.com/songhaoreact/xianzhe
 
-cd xainzhi
+cd xianzhe
 
 npm install
 
